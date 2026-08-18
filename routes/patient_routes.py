@@ -179,7 +179,7 @@ def book_appointment():
 
             try:
                 # Ensure connection is alive and get fresh cursor
-                mysql.connection.ping(True)
+                mysql.connection.ping(reconnect=True)
                 cur = mysql.connection.cursor()
                 # 1. Check if date is in the past
                 selected_date = datetime.strptime(date, '%Y-%m-%d').date()

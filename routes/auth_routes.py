@@ -153,7 +153,7 @@ def verify_otp():
             # OTP Correct -> Create Account
             try:
                 # Ensure connection is alive to prevent "Server has gone away"
-                mysql.connection.ping(True)
+                mysql.connection.ping(reconnect=True)
                 cur = mysql.connection.cursor()
                 
                 cur.execute("""

@@ -46,7 +46,11 @@ def create_app():
         else:
             return redirect(url_for('patient.dashboard'))
 
-    with app.app_context():
+    @app.before_request
+    def ensure_admin():
+        """Create default admin user on first request if not exists."""
+        if getattr(app, '_admin_checked', False):
+            return
         try:
             cur = mysql.connection.cursor()
             cur.execute("SELECT id FROM users WHERE email=%s", ('admin@smartcare.com',))
@@ -57,6 +61,7 @@ def create_app():
                     ('Admin User', 'admin@smartcare.com', '9999999999', hashed, 'admin', 1))
                 mysql.connection.commit()
             cur.close()
+            app._admin_checked = True
         except Exception as e:
             print(f"DB init: {e}")
 
