@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Manage Patients - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Patients</h1>
+        <p class="page-subtitle">Manage all registered patients</p>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="card dashboard-card mb-4">
+    <div class="card-body">
+        <form method="GET" class="d-flex gap-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0" name="search"
+                    placeholder="Search by name, email, or phone..." value="{{ search }}">
+            </div>
+            <button type="submit" class="btn btn-primary-gradient px-4">Search</button>
+            {% if search %}
+            <a href="{{ url_for('admin.patients') }}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Patients Table -->
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-people me-2"></i>Patient List</h5>
+        <span class="badge bg-soft-primary">{{ patients|length }} total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Blood Group</th>
+                        <th>Emergency</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in patients %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="table-avatar me-2">{{ p.full_name[0]|upper }}</div>
+                                <span class="fw-medium">{{ p.full_name }}</span>
+                            </div>
+                        </td>
+                        <td>{{ p.email }}</td>
+                        <td>{{ p.phone or 'N/A' }}</td>
+                        <td><span class="badge bg-light text-dark">{{ p.blood_group or 'N/A' }}</span></td>
+                        <td>{{ p.emergency_contact or 'N/A' }}</td>
+                        <td>{{ p.created_at.strftime('%d %b %Y') if p.created_at else 'N/A' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No patients found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

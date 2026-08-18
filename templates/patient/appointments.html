@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}My Appointments - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Appointments</h1>
+        <p class="page-subtitle">View all your appointment history</p>
+    </div>
+    <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-primary-gradient">
+        <i class="bi bi-calendar-plus me-2"></i>Book New
+    </a>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-calendar-check me-2"></i>Appointment History</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apt in appointments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="table-avatar me-2">{{ apt.doctor_name[0]|upper }}</div>
+                                <span>Dr. {{ apt.doctor_name }}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-soft-primary">{{ apt.specialization }}</span></td>
+                        <td>{{ apt.appointment_date }}</td>
+                        <td>{{ apt.appointment_time }}</td>
+                        <td>{{ apt.reason or 'General' }}</td>
+                        <td><span class="badge badge-{{ apt.status }}">{{ apt.status|capitalize }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No appointments yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

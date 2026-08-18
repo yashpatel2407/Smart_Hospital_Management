@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}My Reports - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Reports</h1>
+        <p class="page-subtitle">Upload and view your medical reports</p>
+    </div>
+    <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#uploadReportModal">
+        <i class="bi bi-cloud-upload me-2"></i>Upload Report
+    </button>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-file-earmark-medical me-2"></i>Report History</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Findings</th>
+                        <th>File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reports %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><span class="badge bg-soft-primary">{{ r.report_type }}</span></td>
+                        <td class="fw-medium">{{ r.report_title }}</td>
+                        <td>{{ r.doctor_name }}</td>
+                        <td>{{ r.created_at.strftime('%d %b %Y') if r.created_at else 'N/A' }}</td>
+                        <td>{{ (r.findings or '—')[:50] }}</td>
+                        <td>
+                            {% if r.file_path %}
+                            {% set clean_path = r.file_path.replace('\\', '/') %}
+                            <a href="{{ url_for('static', filename=clean_path) }}" target="_blank"
+                                class="btn-action btn-action-primary" title="Download Report">
+                                <i class="bi bi-download"></i>
+                            </a>
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No reports uploaded</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadReportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0"
+            style="border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h4 class="modal-title fw-bold text-dark"><i
+                        class="bi bi-cloud-upload-fill text-primary me-2"></i>Secure Report Upload</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Report Category *</label>
+                            <select class="form-select form-select-lg bg-light border-0" name="report_type"
+                                style="border-radius: 12px; font-size: 15px;" required>
+                                <option value="">Select Category</option>
+                                <option>Blood Test</option>
+                                <option>X-Ray</option>
+                                <option>MRI</option>
+                                <option>CT Scan</option>
+                                <option>ECG</option>
+                                <option>Ultrasound</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Report Title *</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0"
+                                name="report_title" placeholder="e.g. Annual Blood Work"
+                                style="border-radius: 12px; font-size: 15px;" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Summary of
+                                Findings</label>
+                            <textarea class="form-control bg-light border-0" name="findings" rows="3"
+                                placeholder="Briefly describe the results..."
+                                style="border-radius: 12px; font-size: 15px;"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Select File (PDF or
+                                Image)</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control form-control-lg bg-light border-0"
+                                    name="report_file" accept=".pdf,.png,.jpg,.jpeg"
+                                    style="border-radius: 12px; font-size: 14px;">
+                            </div>
+                            <div class="mt-2 small text-muted"><i class="bi bi-info-circle me-1"></i> Max file size: 5MB
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal"
+                        style="border-radius: 10px; font-weight: 600; color: #64748b;">Cancel</button>
+                    <button type="submit" class="btn btn-primary-gradient px-4 py-2"
+                        style="border-radius: 10px; font-weight: 600;">Securely Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

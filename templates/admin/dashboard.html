@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - SmartCare HMS{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Welcome back, {{ session.full_name }}! Here's your hospital overview.</p>
+    </div>
+    <div class="header-actions">
+        <span class="badge bg-soft-primary"><i class="bi bi-clock me-1"></i>Queue: {{ queue_size }} waiting</span>
+    </div>
+</div>
+
+<!-- Stat Cards Row -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card stat-card-primary">
+            <div class="stat-card-body">
+                <div class="stat-info">
+                    <span class="stat-label">Total Patients</span>
+                    <h3 class="stat-value">{{ total_patients }}</h3>
+                    <span class="stat-change text-success"><i class="bi bi-arrow-up"></i> Active</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+            <div class="stat-card-footer">
+                <a href="{{ url_for('admin.patients') }}">View all patients <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card stat-card-success">
+            <div class="stat-card-body">
+                <div class="stat-info">
+                    <span class="stat-label">Doctors</span>
+                    <h3 class="stat-value">{{ total_doctors }}</h3>
+                    <span class="stat-change text-success"><i class="bi bi-check-circle"></i> On Duty</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+            </div>
+            <div class="stat-card-footer">
+                <a href="{{ url_for('admin.doctors') }}">Manage doctors <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card stat-card-warning">
+            <div class="stat-card-body">
+                <div class="stat-info">
+                    <span class="stat-label">Appointments</span>
+                    <h3 class="stat-value">{{ total_appointments }}</h3>
+                    <span class="stat-change text-warning"><i class="bi bi-calendar-check"></i> Total</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+            </div>
+            <div class="stat-card-footer">
+                <a href="{{ url_for('admin.appointments') }}">View schedule <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card stat-card-info">
+            <div class="stat-card-body">
+                <div class="stat-info">
+                    <span class="stat-label">Revenue</span>
+                    <h3 class="stat-value">₹{{ "{:,.0f}".format(total_revenue) }}</h3>
+                    <span class="stat-change text-info"><i class="bi bi-currency-rupee"></i> Collected</span>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+            <div class="stat-card-footer">
+                <a href="{{ url_for('admin.billing') }}">View billing <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Peak Insights Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm"
+            style="border-radius: 20px; background: linear-gradient(45deg, #6366f1, #818cf8);">
+            <div class="card-body p-4 text-white d-flex align-items-center">
+                <div class="bg-white bg-opacity-25 p-3 rounded-circle me-3">
+                    <i class="bi bi-calendar-check fs-2"></i>
+                </div>
+                <div>
+                    <div class="small opacity-75 fw-bold text-uppercase">Busiest Day</div>
+                    <div class="h3 fw-bold mb-0">{{ peak_day }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm"
+            style="border-radius: 20px; background: linear-gradient(45deg, #f59e0b, #fbbf24);">
+            <div class="card-body p-4 text-white d-flex align-items-center">
+                <div class="bg-white bg-opacity-25 p-3 rounded-circle me-3">
+                    <i class="bi bi-alarm fs-2"></i>
+                </div>
+                <div>
+                    <div class="small opacity-75 fw-bold text-uppercase">Peak Time Slot</div>
+                    <div class="h3 fw-bold mb-0">{{ peak_time }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-12">
+        <div class="card dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Traffic Trends</h5>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-primary active" id="btn-day">Day</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-week">Week</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-month">Month</button>
+                </div>
+            </div>
+            <div class="card-body" style="height: 350px; padding: 25px;">
+                <canvas id="trendLineChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title"><i class="bi bi-bar-chart me-2"></i>Status Breakdown</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light border-0 dropdown-toggle text-primary fw-bold" type="button"
+                        data-bs-toggle="dropdown">
+                        {{ trend_range|capitalize if trend_range else 'Monthly' }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px;">
+                        <li><a class="dropdown-item py-2 px-3 {{ 'active' if trend_range == 'day' }}"
+                                href="?range=day">Daily</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {{ 'active' if trend_range == 'week' }}"
+                                href="?range=week">Weekly</a></li>
+                        <li><a class="dropdown-item py-2 px-3 {{ 'active' if not trend_range or trend_range == 'month' }}"
+                                href="?range=month">Monthly</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body" style="height: 350px; padding: 25px;">
+                <canvas id="appointmentBarChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title"><i class="bi bi-pie-chart me-2"></i>Departments</h5>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center"
+                style="height: 350px; padding: 25px;">
+                <canvas id="departmentPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title"><i class="bi bi-calendar-check me-2"></i>Recent Appointments</h5>
+                <a href="{{ url_for('admin.appointments') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for apt in recent_appointments[:8] %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="table-avatar me-2">{{ apt.patient_name[0]|upper }}</div>
+                                        <span>{{ apt.patient_name }}</span>
+                                    </div>
+                                </td>
+                                <td>Dr. {{ apt.doctor_name }}</td>
+                                <td>{{ apt.appointment_date }}</td>
+                                <td>
+                                    <span class="badge badge-{{ apt.status }}">{{ apt.status|capitalize }}</span>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No appointments yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title"><i class="bi bi-people me-2"></i>Recent Patients</h5>
+                <a href="{{ url_for('admin.patients') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover dashboard-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Blood</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in recent_patients[:8] %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="table-avatar me-2">{{ p.full_name[0]|upper }}</div>
+                                        <div>
+                                            <div class="fw-medium">{{ p.full_name }}</div>
+                                            <small class="text-muted">{{ p.email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-light text-dark">{{ p.blood_group or 'N/A' }}</span></td>
+                                <td>{{ p.created_at.strftime('%d %b') if p.created_at else 'N/A' }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">No patients yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Safe data ingestion
+        const chartLabels = JSON.parse('{{ chart_labels | tojson | safe }}');
+        const chartValues = JSON.parse('{{ chart_values | tojson | safe }}');
+        const deptLabels = JSON.parse('{{ dept_labels | tojson | safe }}');
+        const deptValues = JSON.parse('{{ dept_values | tojson | safe }}');
+
+        // Trend Data
+        const dayTrends = JSON.parse('{{ day_trends | tojson | safe }}');
+        const weekTrends = JSON.parse('{{ week_trends | tojson | safe }}');
+        const monthTrends = JSON.parse('{{ month_trends | tojson | safe }}');
+
+        // Traffic Trends Line Chart
+        const trendCtx = document.getElementById('trendLineChart').getContext('2d');
+        let trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: dayTrends.map(d => d.label),
+                datasets: [{
+                    label: 'Appointments',
+                    data: dayTrends.map(d => d.count),
+                    borderColor: '#6366f1',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Switching Logic
+        const btnDay = document.getElementById('btn-day');
+        const btnWeek = document.getElementById('btn-week');
+        const btnMonth = document.getElementById('btn-month');
+
+        const updateData = (type, btn) => {
+            [btnDay, btnWeek, btnMonth].forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            let newData = [];
+            if (type === 'day') newData = dayTrends;
+            else if (type === 'week') newData = weekTrends;
+            else if (type === 'month') newData = monthTrends;
+
+            trendChart.data.labels = newData.map(d => d.label);
+            trendChart.data.datasets[0].data = newData.map(d => d.count);
+            trendChart.update();
+        };
+
+        btnDay.onclick = () => updateData('day', btnDay);
+        btnWeek.onclick = () => updateData('week', btnWeek);
+        btnMonth.onclick = () => updateData('month', btnMonth);
+
+        // Appointment Status Bar Chart
+        const barElem = document.getElementById('appointmentBarChart');
+        if (barElem) {
+            new Chart(barElem.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Total Appointments',
+                        data: chartValues,
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.2)', // Pending
+                            'rgba(16, 185, 129, 0.2)', // Confirmed
+                            'rgba(59, 130, 246, 0.2)', // Completed
+                            'rgba(239, 68, 68, 0.2)'   // Cancelled
+                        ],
+                        borderColor: [
+                            '#6366f1',
+                            '#10b981',
+                            '#3b82f6',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8 }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#f1f5f9' }, ticks: { stepSize: 1, color: '#64748b' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } }
+                    }
+                }
+            });
+        }
+
+        // Departments Chart
+        const pieElem = document.getElementById('departmentPieChart');
+        if (pieElem) {
+            const pColors = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+            if (deptLabels && deptLabels.length > 0) {
+                new Chart(pieElem.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: deptLabels,
+                        datasets: [{
+                            data: deptValues,
+                            backgroundColor: pColors.slice(0, deptLabels.length),
+                            borderWidth: 8,
+                            borderColor: '#fff',
+                            hoverOffset: 15,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { padding: 25, usePointStyle: true, pointStyle: 'circle', font: { size: 12, weight: '600' }, color: '#475569' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                pieElem.parentElement.innerHTML = '<div class="text-center py-5"><i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i><p class="text-muted">No data available</p></div>';
+            }
+        }
+    });
+</script>
+{% endblock %}

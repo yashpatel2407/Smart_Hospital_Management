@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Book Appointment</h1>
+        <p class="page-subtitle">Choose a doctor and schedule your visit</p>
+    </div>
+</div>
+
+<div class="card dashboard-card shadow-sm border-0" style="border-radius: 28px; overflow: hidden;">
+    <div class="card-body p-4 p-md-5">
+        <form method="POST" action="{{ url_for('patient.book_appointment') }}" id="appointmentForm">
+            <div class="row g-4">
+                <div class="col-md-12">
+                    <label class="form-label fw-bold text-dark mb-2"><i class="bi bi-person-badge me-2"></i>Select
+                        Specialized Doctor *</label>
+                    <select class="form-select form-select-lg border-0 bg-light shadow-none" name="doctor_id"
+                        id="doctorSelect" style="border-radius: 12px; padding: 12px 20px;" required>
+                        <option value="">Search or choose a doctor...</option>
+                        {% for d in doctors %}
+                        <option value="{{ d.id }}" data-spec="{{ d.specialization }}"
+                            data-fee="{{ d.consultation_fee }}" data-days="{{ d.available_days }}">
+                            Dr. {{ d.full_name }} — {{ d.specialization }} (₹{{ d.consultation_fee }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-dark mb-2"><i class="bi bi-calendar2-event me-2"></i>Preferred
+                        Date *</label>
+                    <div id="weekendWarning" class="alert alert-warning p-2 small mb-2 d-none"
+                        style="border-radius: 12px; font-size: 0.8rem;">
+                        <i class="bi bi-clock-history me-1"></i> Hospital is closed on Sundays.
+                    </div>
+                    <input type="date" class="form-control form-control-lg border-0 bg-light shadow-none"
+                        name="appointment_date" id="apptDate" style="border-radius: 12px; padding: 12px 20px;" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-dark mb-2"><i class="bi bi-clock me-2"></i>Preferred Time
+                        *</label>
+                    <div class="position-relative">
+                        <input type="time" class="form-control form-control-lg border-0 bg-light shadow-none"
+                            name="appointment_time" id="apptTime" min="08:00" max="20:00"
+                            style="border-radius: 12px; padding: 12px 20px;" required>
+                        <div class="mt-2 d-flex align-items-center gap-2">
+                            <span class="badge bg-soft-info" style="font-size: 11px;">Visit hours: 08:00 AM - 08:00
+                                PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold text-dark mb-2"><i class="bi bi-chat-left-text me-2"></i>Reason for
+                        Visit *</label>
+                    <textarea class="form-control border-0 bg-light shadow-none" name="reason" rows="4"
+                        placeholder="Please describe your symptoms or any specific concerns..."
+                        style="border-radius: 15px; padding: 15px 20px;" required></textarea>
+                </div>
+            </div>
+
+            <!-- Doctor Info Card -->
+            <div id="doctorInfo" class="mt-4 p-4 d-none"
+                style="background: rgba(99, 102, 241, 0.05); border: 1px dashed #6366f1; border-radius: 16px;">
+                <div class="row text-center g-3">
+                    <div class="col-md-4">
+                        <div class="text-muted small mb-1">Specialization</div>
+                        <div class="fw-bold text-primary" id="infoSpec"></div>
+                    </div>
+                    <div class="col-md-4 border-start border-end">
+                        <div class="text-muted small mb-1">Consultation Fee</div>
+                        <div class="fw-bold text-primary">₹<span id="infoFee"></span></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-muted small mb-1">Available Days</div>
+                        <div class="fw-bold text-primary" id="infoDays"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 d-flex gap-3">
+                <button type="submit" class="btn btn-primary-gradient px-5 py-3 shadow-sm" style="border-radius: 12px;">
+                    <i class="bi bi-calendar-check-fill me-2"></i>Confirm Appointment
+                </button>
+                <a href="{{ url_for('patient.appointments') }}" class="btn btn-light px-5 py-3"
+                    style="border-radius: 12px; background: #f1f5f9; color: #64748b;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Available Doctors -->
+<h4 class="fw-bold text-dark mt-5 mb-4 d-flex align-items-center">
+    <i class="bi bi-star-fill text-warning me-2"></i>Meet Our Expert Physicians
+</h4>
+<div class="row g-4">
+    {% for d in doctors %}
+    <div class="col-lg-4 col-md-6">
+        <div class="card dashboard-card h-100 border-0 shadow-hover"
+            style="border-radius: 20px; transition: all 0.3s ease;">
+            <div class="card-body p-4 text-center">
+                <div class="position-relative d-inline-block mb-3">
+                    <div class="table-avatar mx-auto shadow-sm"
+                        style="width:70px;height:70px;font-size:28px; background: linear-gradient(45deg, #6366f1, #8b5cf6);">
+                        {{ d.full_name[0]|upper }}
+                    </div>
+                    <div class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle"
+                        style="width:15px;height:15px;" title="Online"></div>
+                </div>
+                <h5 class="fw-bold mb-1">Dr. {{ d.full_name }}</h5>
+                <div class="text-primary small fw-semibold mb-3">{{ d.specialization }}</div>
+
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-soft-info text-info rounded-pill px-3">{{ d.experience_years }} Yrs Exp</span>
+                    <span class="badge bg-soft-success text-success rounded-pill px-3">₹{{ d.consultation_fee }}</span>
+                </div>
+
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-4"
+                    onclick="document.getElementById('doctorSelect').value='{{ d.id }}'; document.getElementById('doctorSelect').dispatchEvent(new Event('change')); window.scrollTo({top: 0, behavior: 'smooth'});">
+                    Select Profile
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('doctorSelect').addEventListener('change', function () {
+        const opt = this.options[this.selectedIndex];
+        const info = document.getElementById('doctorInfo');
+        if (this.value) {
+            document.getElementById('infoSpec').textContent = opt.dataset.spec;
+            document.getElementById('infoFee').textContent = opt.dataset.fee;
+            document.getElementById('infoDays').textContent = opt.dataset.days;
+            info.classList.remove('d-none');
+        } else {
+            info.classList.add('d-none');
+        }
+    });
+
+    // Use a more specific selector for the form
+    const bookingForm = document.getElementById('appointmentForm');
+    const apptDateInput = document.getElementById('apptDate');
+    const apptTimeInput = document.getElementById('apptTime');
+    const reasonInput = bookingForm ? bookingForm.querySelector('textarea[name="reason"]') : null;
+    const submitBtn = bookingForm ? bookingForm.querySelector('button[type="submit"]') : null;
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    apptDateInput.min = todayStr;
+
+    // Create error message container if it doesn't exist
+    let errorMsg = document.getElementById('validationError');
+    if (!errorMsg && apptTimeInput) {
+        errorMsg = document.createElement('div');
+        errorMsg.id = 'validationError';
+        errorMsg.className = 'alert alert-danger p-3 small mt-3 d-none shadow-sm';
+        errorMsg.style.borderRadius = '12px';
+        apptTimeInput.parentNode.appendChild(errorMsg);
+    }
+
+    function showValidationError(msg) {
+        if (errorMsg) {
+            errorMsg.innerHTML = `<i class="bi bi-exclamation-octagon-fill me-2"></i><strong>Error:</strong> ${msg}`;
+            errorMsg.classList.remove('d-none');
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            alert(msg);
+        }
+    }
+
+    function hideValidationError() {
+        if (errorMsg) errorMsg.classList.add('d-none');
+    }
+
+    function validateForm(isSubmit = false) {
+        hideValidationError();
+        const selectedDate = apptDateInput.value;
+        const selectedTime = apptTimeInput.value;
+
+        if (!selectedDate || !selectedTime) {
+            if (isSubmit) showValidationError("Please select both a date and a time slot.");
+            return false;
+        }
+
+        const now = new Date();
+        const selectedDay = new Date(selectedDate).getUTCDay();
+
+        // 1. Block Sundays
+        const weekendWarning = document.getElementById('weekendWarning');
+        if (selectedDay === 0) {
+            if (weekendWarning) weekendWarning.classList.remove('d-none');
+            showValidationError("Sunday Hospital is closed. Please choose another date.");
+            return false;
+        } else {
+            if (weekendWarning) weekendWarning.classList.add('d-none');
+        }
+
+        // 2. Block Past Times for Today
+        if (selectedDate === todayStr) {
+            const nowTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            if (selectedTime < nowTime) {
+                showValidationError("The selected time has already passed for today. Please pick a future slot.");
+                apptTimeInput.classList.add('is-invalid');
+                return false;
+            }
+        }
+
+        apptTimeInput.classList.remove('is-invalid');
+        return true;
+    }
+
+    if (apptDateInput) {
+        apptDateInput.addEventListener('change', () => {
+            if (apptDateInput.value === todayStr) {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const currentMin = now.getMinutes();
+                let targetHour = Math.max(8, currentHour);
+                let targetMin = Math.ceil(currentMin / 15) * 15;
+                if (targetMin >= 60) { targetHour++; targetMin = 0; }
+
+                if (targetHour < 20) {
+                    const autoTime = targetHour.toString().padStart(2, '0') + ":" + targetMin.toString().padStart(2, '0');
+                    if (!apptTimeInput.value || apptTimeInput.value < autoTime) {
+                        apptTimeInput.value = autoTime;
+                    }
+                }
+            }
+            validateForm();
+        });
+    }
+
+    if (apptTimeInput) {
+        apptTimeInput.addEventListener('input', () => validateForm());
+    }
+
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function (e) {
+            // Re-validate everything
+            const isDateValid = validateForm(true);
+            const isReasonValid = (reasonInput && reasonInput.value.trim().length > 0);
+
+            if (!isDateValid) {
+                e.preventDefault();
+                return;
+            }
+
+            if (!isReasonValid) {
+                e.preventDefault();
+                showValidationError("Please provide a reason for your visit.");
+                if (reasonInput) reasonInput.focus();
+                return;
+            }
+
+            // If we reach here, form is valid. 
+            // Add a small delay for the loading state to ensure the submit event has fired.
+            if (submitBtn) {
+                setTimeout(() => {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
+                }, 100);
+            }
+        });
+    }
+
+    // Initial check on page load if values exist
+    if (apptDateInput.value || apptTimeInput.value) validateForm();
+</script>
+{% endblock %}

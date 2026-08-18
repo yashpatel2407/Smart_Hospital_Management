@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}My Appointments - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Appointments</h1>
+        <p class="page-subtitle">View and manage your patient appointments</p>
+    </div>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-calendar-check me-2"></i>Appointment List</h5>
+        <span class="badge bg-soft-primary">{{ appointments|length }} total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Blood</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apt in appointments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="table-avatar me-2">{{ apt.patient_name[0]|upper }}</div>
+                                <span class="fw-medium">{{ apt.patient_name }}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-light text-dark">{{ apt.blood_group or 'N/A' }}</span></td>
+                        <td>{{ apt.appointment_date }}</td>
+                        <td>{{ apt.appointment_time }}</td>
+                        <td>{{ apt.reason or 'General checkup' }}</td>
+                        <td><span class="badge badge-{{ apt.status }}">{{ apt.status|capitalize }}</span></td>
+                        <td>
+                            <div class="action-group">
+                                {% if apt.status == 'pending' %}
+                                <a href="{{ url_for('doctor.accept_appointment', aid=apt.id) }}"
+                                    class="btn-action btn-action-success" title="Accept">
+                                    <i class="bi bi-check-circle"></i>
+                                </a>
+                                <a href="{{ url_for('doctor.reject_appointment', aid=apt.id) }}"
+                                    class="btn-action btn-action-danger" title="Reject">
+                                    <i class="bi bi-x-circle"></i>
+                                </a>
+                                {% elif apt.status == 'confirmed' %}
+                                <a href="{{ url_for('doctor.view_patient_reports', pid=apt.patient_id) }}"
+                                    class="btn-action btn-action-info" title="View Reports">
+                                    <i class="bi bi-file-earmark-medical"></i>
+                                </a>
+                                <a href="{{ url_for('doctor.create_prescription', aid=apt.id) }}"
+                                    class="btn-action btn-action-primary" title="Create Prescription">
+                                    <i class="bi bi-file-earmark-plus"></i>
+                                </a>
+                                <a href="{{ url_for('doctor.complete_appointment', aid=apt.id) }}"
+                                    class="btn-action btn-action-success" title="Mark Complete">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+                                {% else %}
+                                <span class="text-muted small px-2">{{ apt.status|capitalize }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No appointments</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Prescriptions - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Prescriptions</h1>
+        <p class="page-subtitle">All prescriptions you have created</p>
+    </div>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Prescription History</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Diagnosis</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in prescriptions %}
+                    <tr>
+                        <td>RX-{{ p.id }}</td>
+                        <td><span class="fw-medium">{{ p.patient_name }}</span></td>
+                        <td>{{ p.appointment_date }}</td>
+                        <td>{{ p.diagnosis[:60] }}{% if p.diagnosis|length > 60 %}...{% endif %}</td>
+                        <td>{{ (p.notes or '—')[:40] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No prescriptions created</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

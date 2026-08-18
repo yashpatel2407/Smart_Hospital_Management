@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Appointments - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Appointments</h1>
+        <p class="page-subtitle">Manage and approve patient appointments</p>
+    </div>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-calendar-check me-2"></i>All Appointments</h5>
+        <span class="badge bg-soft-primary">{{ appointments|length }} total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apt in appointments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="table-avatar me-2">{{ apt.patient_name[0]|upper }}</div>{{ apt.patient_name
+                                }}
+                            </div>
+                        </td>
+                        <td>Dr. {{ apt.doctor_name }}</td>
+                        <td><span class="badge bg-soft-primary">{{ apt.specialization }}</span></td>
+                        <td>{{ apt.appointment_date }}</td>
+                        <td>{{ apt.appointment_time }}</td>
+                        <td><span class="badge badge-{{ apt.status }}">{{ apt.status|capitalize }}</span></td>
+                        <td>
+                            {% if apt.status == 'pending' %}
+                            <span class="text-warning small"><i class="bi bi-clock me-1"></i>Awaiting Doctor</span>
+                            {% elif apt.status == 'confirmed' %}
+                            <span class="text-success small"><i class="bi bi-check-circle me-1"></i>Confirmed</span>
+                            {% else %}
+                            <span class="text-muted small">{{ apt.status|capitalize }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No appointments</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

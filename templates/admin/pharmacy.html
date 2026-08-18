@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Pharmacy - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Pharmacy</h1>
+        <p class="page-subtitle">Manage medicines inventory</p>
+    </div>
+    <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+        <i class="bi bi-plus-circle me-2"></i>Add Medicine
+    </button>
+</div>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-capsule me-2"></i>Medicine Inventory</h5>
+        <span class="badge bg-soft-primary">{{ medicines|length }} items</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Medicine</th>
+                        <th>Category</th>
+                        <th>Manufacturer</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Expiry</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in medicines %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><span class="fw-medium">{{ m.name }}</span></td>
+                        <td><span class="badge bg-soft-primary">{{ m.category or 'N/A' }}</span></td>
+                        <td>{{ m.manufacturer or 'N/A' }}</td>
+                        <td>₹{{ m.price }}</td>
+                        <td>
+                            {% if m.stock_quantity < 10 %} <span class="badge bg-danger">{{ m.stock_quantity }}
+                                (Low)</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ m.stock_quantity }}</span>
+                                {% endif %}
+                        </td>
+                        <td>{{ m.expiry_date or 'N/A' }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.update_medicine', mid=m.id) }}"
+                                class="action-group">
+                                <input type="number" class="form-control form-control-sm border-0 bg-light"
+                                    name="stock_quantity" value="{{ m.stock_quantity }}"
+                                    style="width:70px; border-radius: 8px;">
+                                <input type="hidden" name="price" value="{{ m.price }}">
+                                <button type="submit" class="btn-action btn-action-primary" title="Update Stock">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No medicines in inventory</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Medicine Modal -->
+<div class="modal fade" id="addMedicineModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0"
+            style="border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h4 class="modal-title fw-bold text-dark"><i class="bi bi-capsule-pill text-primary me-2"></i>Add New
+                    Medicine</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.pharmacy') }}">
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Medicine Name *</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0" name="name"
+                                placeholder="e.g. Paracetamol 500mg" style="border-radius: 12px; font-size: 15px;"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Category</label>
+                            <select class="form-select form-select-lg bg-light border-0" name="category"
+                                style="border-radius: 12px; font-size: 15px;">
+                                <option value="">Select Category</option>
+                                <option>Tablet</option>
+                                <option>Capsule</option>
+                                <option>Syrup</option>
+                                <option>Injection</option>
+                                <option>Ointment</option>
+                                <option>Drops</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Manufacturer</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0"
+                                name="manufacturer" placeholder="e.g. Pfizer"
+                                style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Unit Price (₹) *</label>
+                            <input type="number" class="form-control form-control-lg bg-light border-0" name="price"
+                                required min="0" step="0.01" style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Initial Stock</label>
+                            <input type="number" class="form-control form-control-lg bg-light border-0"
+                                name="stock_quantity" value="0" min="0" style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Expiry Date</label>
+                            <input type="date" class="form-control form-control-lg bg-light border-0" name="expiry_date"
+                                style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Brief Description</label>
+                            <textarea class="form-control bg-light border-0" name="description" rows="2"
+                                placeholder="Dosage info or use case..."
+                                style="border-radius: 12px; font-size: 15px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal"
+                        style="border-radius: 10px; font-weight: 600; color: #64748b;">Cancel</button>
+                    <button type="submit" class="btn btn-primary-gradient px-4 py-2"
+                        style="border-radius: 10px; font-weight: 600;">Add to Inventory</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

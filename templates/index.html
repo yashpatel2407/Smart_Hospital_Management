@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCare - Modern Healthcare Solutions</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* ═══ NAVBAR ═══ */
+        .navbar {
+            background: transparent;
+            padding: 35px 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.navbar-scrolled {
+            background: rgba(15, 23, 42, 0.85) !important;
+            backdrop-filter: blur(25px) saturate(180%);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff !important;
+            font-size: 24px;
+        }
+
+        .brand-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-weight: 600;
+            margin: 0 22px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 15.5px;
+            letter-spacing: 0.2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            color: #fff !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-login {
+            color: #fff;
+            font-weight: 700;
+            margin-right: 30px;
+            transition: all 0.3s ease;
+            font-size: 15.5px;
+            text-decoration: none;
+            opacity: 0.95;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-login:hover {
+            opacity: 1;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: #fff;
+            color: #0f172a;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 32px;
+            font-weight: 800;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 15px;
+            box-shadow: 0 10px 20px -5px rgba(255, 255, 255, 0.2);
+            letter-spacing: -0.3px;
+        }
+
+        .btn-register:hover {
+            background: #f8fafc;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 30px -5px rgba(255, 255, 255, 0.4);
+        }
+
+        /* ═══ HERO SLIDER ═══ */
+        .hero-slider {
+            margin-top: 0;
+            /* Changed to 0 so navbar sits on top */
+            position: relative;
+        }
+
+        .carousel-item {
+            height: 100vh;
+            /* Full screen hero */
+            min-height: 600px;
+            background-position: center;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 50%, transparent 100%),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, transparent 25%);
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: #ffffff;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--accent);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-primary-hero {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 16px 32px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-secondary-hero {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 32px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+
+        /* ═══ FOOTER ═══ */
+        footer {
+            background: #000;
+            padding: 80px 0 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 100px;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .footer-heading {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #64748b;
+        }
+
+        .contact-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .bottom-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 60px;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #475569;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #fff;
+        }
+
+        /* ═══ SPECIALIST CARDS ═══ */
+        .specialist-card img {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: saturate(0.8) brightness(0.9);
+        }
+
+        .specialist-card:hover img {
+            transform: translateY(-12px) scale(1.03);
+            filter: saturate(1.1) brightness(1.1);
+            box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.25);
+        }
+
+        @media (max-width: 991px) {
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .carousel-item {
+                height: 70vh;
+            }
+        }
+    </style>
+</head>
+
+<body id="home">
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <div class="brand-icon"><i class="bi bi-heart-pulse-fill text-white"></i></div>
+                <span>SmartCare</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#specialists">Specialists</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    {% if session.user_id %}
+                    <a href="{{ url_for('dashboard_redirect') }}" class="btn-register text-decoration-none">
+                        <i class="bi bi-speedometer2 me-2"></i>My Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-login text-decoration-none">Log in</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn-register text-decoration-none">Sign up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ HERO SLIDER ═══ -->
+    <div class="hero-slider-wrapper">
+        <div id="heroCarousel" class="carousel slide hero-slider" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active"
+                    style="background-image: url('{{ url_for('static', filename='img/Image1.avif') }}');">
+                    <div class="carousel-overlay">
+                        <div class="hero-content">
+                            <span class="hero-badge">Award Winning Healthcare</span>
+                            <h1>Personalized Care<br>for a Healthier Life</h1>
+                            <p>Unlock access to top-tier medical specialists and manage your health journey with every
+                                appointment, report, and prescription in one place.</p>
+                            <div class="cta-group">
+                                <a href="{{ url_for('dashboard_redirect') if session.user_id else url_for('auth.register') }}"
+                                    class="btn-primary-hero">Get Started</a>
+                                <a href="#about" class="btn-secondary-hero">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item"
+                    style="background-image: url('{{ url_for('static', filename='img/Image2.avif') }}');">
+                    <div class="carousel-overlay">
+                        <div class="hero-content">
+                            <span class="hero-badge">Modern Infrastructure</span>
+                            <h1>State-of-the-Art<br>Medical Facilities</h1>
+                            <p>We combine advanced technology with compassionate care to provide the best possible
+                                outcomes for our patients across all departments.</p>
+                            <div class="cta-group">
+                                <a href="{{ url_for('dashboard_redirect') if session.user_id else url_for('auth.register') }}"
+                                    class="btn-primary-hero">Find a Doctor</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-item"
+                    style="background-image: url('{{ url_for('static', filename='img/Image3.avif') }}');">
+                    <div class="carousel-overlay">
+                        <div class="hero-content">
+                            <span class="hero-badge">AI-Powered Experience</span>
+                            <h1>Smart Healthcare<br>at Your Fingertips</h1>
+                            <p>From AI-powered health assistants to seamless digital health records, we are redefining
+                                how you interact with healthcare services.</p>
+                            <div class="cta-group">
+                                <a href="{{ url_for('auth.register') }}" class="btn-primary-hero">Sign up</a>
+                                <a href="#services" class="btn-secondary-hero">Services</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══ SERVICES SECTION ═══ -->
+    <section id="services" class="py-5 mt-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <span class="hero-badge">Our Expertise</span>
+                <h2 class="display-4 fw-bold mt-3">Exceptional Services</h2>
+                <p class="text-secondary mx-auto" style="max-width: 600px;">We offer a comprehensive range of medical
+                    services designed to meet all your healthcare needs with precision and care.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary-subtle border-0 h-100 p-4"
+                        style="border-radius: 25px; background: rgba(59, 130, 246, 0.05) !important;">
+                        <div class="brand-icon mb-4"><i class="bi bi-heart-pulse-fill text-white"></i></div>
+                        <h4 class="fw-bold text-white">Cardiology</h4>
+                        <p class="text-secondary">Compassionate heart care using the latest diagnostic tools and
+                            interventional procedures.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-primary-subtle border-0 h-100 p-4"
+                        style="border-radius: 25px; background: rgba(59, 130, 246, 0.05) !important;">
+                        <div class="brand-icon mb-4" style="background: linear-gradient(135deg, #10b981, #059669);"><i
+                                class="bi bi-activity text-white"></i></div>
+                        <h4 class="fw-bold text-white">Neurology</h4>
+                        <p class="text-secondary">Expert management of complex neurological disorders with cutting-edge
+                            neurological research.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-primary-subtle border-0 h-100 p-4"
+                        style="border-radius: 25px; background: rgba(59, 130, 246, 0.05) !important;">
+                        <div class="brand-icon mb-4" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i
+                                class="bi bi-capsule-pill text-white"></i></div>
+                        <h4 class="fw-bold text-white">Pharmacy</h4>
+                        <p class="text-secondary">In-house pharmacy providing authentic medications and expert
+                            pharmacological advice.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ WHY CHOOSE US ═══ -->
+    <section class="py-5" style="background: rgba(15, 23, 42, 0.4);">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5">
+                    <span class="hero-badge"
+                        style="background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2);">The
+                        Smart Advantage</span>
+                    <h2 class="display-5 fw-bold mt-3 text-white">Why Patients Trust SmartCare</h2>
+                    <p class="text-secondary mt-4">We are leading the digital transformation of healthcare. Our platform
+                        doesn't just manage data; it improves outcomes.</p>
+
+                    <div class="mt-5">
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle"
+                                    style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-shield-check text-primary fs-3"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="text-white fw-bold">Bank-Grade Security</h5>
+                                <p class="text-secondary small">Your health data is encrypted and protected by the
+                                    highest industry standards.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-circle"
+                                    style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-lightning-charge text-success fs-3"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="text-white fw-bold">Instant Access</h5>
+                                <p class="text-secondary small">Instant reports, instant booking, and zero wait-time for
+                                    your digital history.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-5 bg-dark border border-secondary border-opacity-10 h-100"
+                                style="border-radius: 30px;">
+                                <h2 class="text-primary fw-800 mb-2">99%</h2>
+                                <p class="text-white fw-bold">Patient Satisfaction</p>
+                                <p class="text-secondary small">Based on 10,000+ verified patient reviews across our
+                                    network.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-5 bg-dark border border-secondary border-opacity-10 h-100"
+                                style="border-radius: 30px;">
+                                <h2 class="text-success fw-800 mb-2">500+</h2>
+                                <p class="text-white fw-bold">Elite Specialists</p>
+                                <p class="text-secondary small">Vetted professionals with minimum 10+ years of clinical
+                                    excellence.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-5 bg-dark border border-secondary border-opacity-10 h-100"
+                                style="border-radius: 30px;">
+                                <h2 class="text-warning fw-800 mb-2">24h</h2>
+                                <p class="text-white fw-bold">Support Response</p>
+                                <p class="text-secondary small">Dedicated care coordinators available around the clock
+                                    for your needs.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-5 bg-dark border border-secondary border-opacity-10 h-100"
+                                style="border-radius: 30px;">
+                                <h2 class="text-info fw-800 mb-2">1M+</h2>
+                                <p class="text-white fw-bold">Reports Analyzed</p>
+                                <p class="text-secondary small">Leveraging AI to help doctors make more accurate
+                                    diagnoses.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ SPECIALISTS SECTION ═══ -->
+    <section id="specialists" class="py-5 bg-dark" style="background: #0b1120 !important;">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <span class="hero-badge"
+                    style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; border-color: rgba(139, 92, 246, 0.2);">Elite
+                    Doctors</span>
+                <h2 class="display-4 fw-bold mt-3 text-white">Expert Specialists</h2>
+                <p class="text-secondary mx-auto" style="max-width: 600px;">Meet our world-renowned team of physicians
+                    committed to excellence in patient care and medical breakthroughs.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card bg-transparent border-0 text-center specialist-card">
+                        <img src="{{ url_for('static', filename='img/doctor1IMG.jpg') }}" class="img-fluid mb-3"
+                            style="border-radius: 20px; height: 320px; width: 100%; object-fit: cover;"
+                            alt="Dr. Sarah Jenkins">
+                        <h5 class="fw-bold text-white">Dr. Naresh Trehan</h5>
+                        <p class="text-accent mb-0" style="color: var(--accent);">Senior Cardiologist</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-transparent border-0 text-center specialist-card">
+                        <img src="{{ url_for('static', filename='img/doctor2IMG.jpg') }}" class="img-fluid mb-3"
+                            style="border-radius: 20px; height: 320px; width: 100%; object-fit: cover;"
+                            alt="Dr. Robert Chen">
+                        <h5 class="fw-bold text-white">Dr. Robert Chen</h5>
+                        <p class="text-accent mb-0" style="color: var(--accent);">Neurologist</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-transparent border-0 text-center specialist-card">
+                        <img src="{{ url_for('static', filename='img/doctor3IMG.jpg') }}" class="img-fluid mb-3"
+                            style="border-radius: 20px; height: 320px; width: 100%; object-fit: cover;"
+                            alt="Dr. Emily Watts">
+                        <h5 class="fw-bold text-white">Dr. Emily Watts</h5>
+                        <p class="text-accent mb-0" style="color: var(--accent);">Pediatric Specialist</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-transparent border-0 text-center specialist-card">
+                        <img src="{{ url_for('static', filename='img/doctor4IMG.jpg') }}" class="img-fluid mb-3"
+                            style="border-radius: 20px; height: 320px; width: 100%; object-fit: cover;"
+                            alt="Dr. James Wilson">
+                        <h5 class="fw-bold text-white">Dr. James Wilson</h5>
+                        <p class="text-accent mb-0" style="color: var(--accent);">Orthopedic Surgeon</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ABOUT SECTION ═══ -->
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <span class="hero-badge">About SmartCare</span>
+                    <h2 class="display-4 fw-bold mt-3 text-white">Redefining Healthcare Through Technology</h2>
+                    <p class="text-secondary mt-4 fs-5">SmartCare is more than just a hospital; it's a digital ecosystem
+                        designed to make healthcare seamless, accessible, and deeply personal. Founded on the principle
+                        of 'Patient-First', we integrate advanced AI with world-class medical expertise.</p>
+                    <ul class="list-unstyled mt-4 text-white">
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-accent me-3"
+                                style="color: var(--accent);"></i> 24/7 Digital Health Access</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-accent me-3"
+                                style="color: var(--accent);"></i> Real-time Appointment Scheduling</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-accent me-3"
+                                style="color: var(--accent);"></i> AI-Driven Diagnosis Support</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img src="{{ url_for('static', filename='img/AboutusIMG.avif') }}" class="img-fluid shadow-lg"
+                            style="border-radius: 30px;" alt="About">
+                        <div class="position-absolute bottom-0 end-0 bg-accent p-4 m-4"
+                            style="background: var(--accent); border-radius: 20px;">
+                            <h3 class="fw-bold text-white mb-0">20+ Years</h3>
+                            <p class="text-white-50 mb-0">of Medical Excellence</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="footer-logo">SmartCare</div>
+                    <p class="footer-text">Providing world-class healthcare since 2004. Our mission is to provide
+                        accessible, affordable, and quality healthcare for everyone through innovation and compassion.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-5 mb-md-0 d-md-flex justify-content-center">
+                    <div>
+                        <h4 class="footer-heading">Company</h4>
+                        <ul class="footer-links">
+                            <li><a href="#about">About Us</a></li>
+                            <li><a href="#services">Our Services</a></li>
+                            <li><a href="#specialists">Doctors</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-5 mb-md-0 d-md-flex justify-content-center">
+                    <div>
+                        <h4 class="footer-heading">Department</h4>
+                        <ul class="footer-links">
+                            <li><a href="#">Cardiology</a></li>
+                            <li><a href="#">Neurology</a></li>
+                            <li><a href="#">Orthopedics</a></li>
+                            <li><a href="#">Pediatrics</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt-fill contact-icon"></i>
+                        <span>123 Medical Plaza, Health Street, New York, NY 10001</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-fill contact-icon"></i>
+                        <span>+91 70169 86613</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-envelope-fill contact-icon"></i>
+                        <span>smarthospitalmanagement@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-clock-fill contact-icon"></i>
+                        <span>Monday - Sunday: 24/7 Available</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-footer">
+                <p>&copy; 2024 SmartCare Hospital Management System. All rights reserved.</p>
+                <ul class="footer-links d-flex gap-4">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

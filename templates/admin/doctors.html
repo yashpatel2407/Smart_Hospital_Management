@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}Manage Doctors - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Doctors</h1>
+        <p class="page-subtitle">Manage and add doctors</p>
+    </div>
+    <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+        <i class="bi bi-person-plus me-2"></i>Add Doctor
+    </button>
+</div>
+
+<!-- Doctors Table -->
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="card-title"><i class="bi bi-person-badge me-2"></i>Doctor List</h5>
+        <span class="badge bg-soft-primary">{{ doctors|length }} total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Qualification</th>
+                        <th>Experience</th>
+                        <th>Fee</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in doctors %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="table-avatar me-2">{{ d.full_name[0]|upper }}</div>
+                                <div>
+                                    <div class="fw-medium">Dr. {{ d.full_name }}</div>
+                                    <small class="text-muted">{{ d.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if d.specialization %}
+                            <span class="badge bg-soft-primary px-3">{{ d.specialization }}</span>
+                            {% else %}
+                            <span class="text-muted small">Not Specified</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ d.qualification }}</td>
+                        <td>{{ d.experience_years }} yrs</td>
+                        <td>₹{{ d.consultation_fee }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.remove_doctor', doc_id=d.doctor_id) }}"
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Are you sure you want to remove this doctor? This will also delete their associated user account.')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No doctors added yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0"
+            style="border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h4 class="modal-title fw-bold text-dark"><i
+                        class="bi bi-person-plus-fill text-primary me-2"></i>Register New Doctor</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.doctors') }}">
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Full Name *</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0" name="full_name"
+                                placeholder="Dr. John Doe" style="border-radius: 12px; font-size: 15px;" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Email Address *</label>
+                            <input type="email" class="form-control form-control-lg bg-light border-0" name="email"
+                                placeholder="john.doe@smartcare.com" style="border-radius: 12px; font-size: 15px;"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Phone Number *</label>
+                            <input type="tel" class="form-control form-control-lg bg-light border-0" name="phone"
+                                placeholder="9876543210" style="border-radius: 12px; font-size: 15px;" required
+                                pattern="[1-9]{1}[0-9]{9}" maxlength="10"
+                                title="Phone number must be exactly 10 digits and cannot start with 0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Security Password
+                                *</label>
+                            <input type="password" class="form-control form-control-lg bg-light border-0"
+                                name="password" placeholder="Min 6 characters"
+                                style="border-radius: 12px; font-size: 15px;" required minlength="6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Specialization *</label>
+                            <select class="form-select form-select-lg bg-light border-0" name="specialization"
+                                style="border-radius: 12px; font-size: 15px;" required>
+                                <option value="">Select Specialty</option>
+                                <option>Cardiology</option>
+                                <option>Neurology</option>
+                                <option>Orthopedics</option>
+                                <option>Pediatrics</option>
+                                <option>Dermatology</option>
+                                <option>Ophthalmology</option>
+                                <option>ENT</option>
+                                <option>General Medicine</option>
+                                <option>Gynecology</option>
+                                <option>Psychiatry</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Qualification *</label>
+                            <select class="form-select form-select-lg bg-light border-0 mb-2" id="qualificationSelect"
+                                name="qualification_select" style="border-radius: 12px; font-size: 15px;"
+                                onchange="toggleManualQualification()" required>
+                                <option value="">Select Qualification</option>
+                                <option value="MBBS">MBBS</option>
+                                <option value="MBBS, MD">MBBS, MD</option>
+                                <option value="MBBS, MS">MBBS, MS</option>
+                                <option value="MBBS, MD, DM">MBBS, MD, DM</option>
+                                <option value="MBBS, MS, MCh">MBBS, MS, MCh</option>
+                                <option value="BDS">BDS</option>
+                                <option value="Other">Other (Enter Manually)</option>
+                            </select>
+                            <input type="text" class="form-control form-control-lg bg-light border-0 d-none"
+                                id="qualificationManual" name="qualification_manual"
+                                placeholder="Enter qualification manually"
+                                style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Experience (Years)</label>
+                            <input type="number" class="form-control form-control-lg bg-light border-0"
+                                name="experience_years" min="0" value="0" style="border-radius: 12px; font-size: 15px;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Consultation Fee
+                                (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"
+                                    style="border-radius: 12px 0 0 12px;">₹</span>
+                                <input type="number" class="form-control form-control-lg bg-light border-0"
+                                    name="consultation_fee" min="0" value="500"
+                                    style="border-radius: 0 12px 12px 0; font-size: 15px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal"
+                        style="border-radius: 10px; font-weight: 600; color: #64748b;">Cancel</button>
+                    <button type="submit" class="btn btn-primary-gradient px-4 py-2"
+                        style="border-radius: 10px; font-weight: 600;">Create Doctor Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function toggleManualQualification() {
+        const select = document.getElementById('qualificationSelect');
+        const manualInput = document.getElementById('qualificationManual');
+        if (select.value === 'Other') {
+            manualInput.classList.remove('d-none');
+            manualInput.setAttribute('required', 'required');
+        } else {
+            manualInput.classList.add('d-none');
+            manualInput.removeAttribute('required');
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

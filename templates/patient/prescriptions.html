@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}My Prescriptions - SmartCare HMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Prescriptions</h1>
+        <p class="page-subtitle">View all your prescriptions and medicines</p>
+    </div>
+</div>
+
+{% for pres in prescriptions %}
+<div class="card dashboard-card mb-4">
+    <div class="card-header ps-4 py-3">
+        <h5 class="card-title">
+            <i class="bi bi-file-earmark-text me-2"></i>RX-{{ pres.id }}
+            <span class="badge bg-soft-primary ms-2">{{ pres.appointment_date }}</span>
+        </h5>
+        <span class="text-muted ms-1">Dr. {{ pres.doctor_name }}</span>
+    </div>
+    <div class="card-body p-4 p-md-5">
+        <div class="mb-3">
+            <strong class="ms-1">Reason for Visit:</strong>
+            <p class="mb-1 text-primary fw-medium ms-1">{{ pres.appointment_reason or 'General checkup' }}</p>
+        </div>
+        <div class="mb-3">
+            <strong class="ms-1">Diagnosis:</strong>
+            <p class="mb-1 ms-1">{{ pres.diagnosis }}</p>
+        </div>
+        {% if pres.notes %}
+        <div class="mb-3">
+            <strong class="ms-1">Notes:</strong>
+            <p class="mb-1 ms-1">{{ pres.notes }}</p>
+        </div>
+        {% endif %}
+
+        {% if pres.medicines %}
+        <h6 class="fw-semibold mt-4 mb-3 ms-1"><i class="bi bi-capsule me-2"></i>Prescribed Medicines</h6>
+        <div class="table-responsive ms-1">
+            <table class="table table-sm dashboard-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Frequency</th>
+                        <th>Duration</th>
+                        <th>Instructions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for med in pres.medicines %}
+                    <tr>
+                        <td class="fw-medium">{{ med.medicine_name }}</td>
+                        <td>{{ med.dosage }}</td>
+                        <td>{{ med.frequency }}</td>
+                        <td>{{ med.duration }}</td>
+                        <td>{{ med.instructions or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="card dashboard-card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-file-earmark-x display-4 text-muted"></i>
+        <p class="text-muted mt-3">No prescriptions yet</p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
