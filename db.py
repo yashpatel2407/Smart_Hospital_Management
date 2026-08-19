@@ -49,8 +49,16 @@ class MySQL:
 
     def _get_ssl_config(self, app):
         """Cloud MySQL providers (Aiven, PlanetScale, etc.) require SSL."""
-        if app.config.get('MYSQL_SSL', False):
-            return {'ca': app.config.get('MYSQL_SSL_CA', None)}
+        ssl_enabled = app.config.get('MYSQL_SSL', False)
+        # Handle string 'true'/'false' from environment variables
+        if isinstance(ssl_enabled, str):
+            ssl_enabled = ssl_enabled.lower() == 'true'
+        if ssl_enabled:
+            ssl_ca = app.config.get('MYSQL_SSL_CA', None)
+            if ssl_ca:
+                return {'ca': ssl_ca}
+            # Simple SSL mode without CA cert verification
+            return {'ssl': {}}
         return None
 
     @property

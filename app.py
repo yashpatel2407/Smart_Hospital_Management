@@ -69,6 +69,13 @@ def create_app():
     def not_found(e):
         return redirect(url_for('index'))
 
+    @app.errorhandler(500)
+    def internal_error(e):
+        import traceback
+        error_msg = traceback.format_exc()
+        print(f"500 Error: {error_msg}")
+        return f"<h1>Server Error</h1><pre>{error_msg}</pre><p>{str(e)}</p>", 500
+
     return app
 
 
