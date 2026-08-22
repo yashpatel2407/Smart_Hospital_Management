@@ -11,121 +11,61 @@ A full-stack Hospital Management System built with **Flask** and **MySQL**, feat
 - **Prescriptions & Billing**: Doctors create prescriptions; Admins manage billing
 - **Pharmacy Management**: Track medicines, stock, and expiry
 - **Medical Reports**: Upload and view patient reports (X-rays, lab results)
-- **AI Medical Chatbot**: Powered by OpenAI for health queries
+- **AI Medical Chatbot**: Powered by OpenAI for health inquiries
 - **OTP Email Verification**: Secure registration with Gmail SMTP
-- **Doctor Leave Management**: Doctors request leaves; Admins approve/reject
+- **Doctor Leave Management**: Doctors request leaves; Admins approve or reject
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology          |
-|------------|---------------------|
-| Backend    | Flask (Python)      |
-| Database   | MySQL / MariaDB     |
-| DB Driver  | PyMySQL             |
-| Frontend   | HTML, CSS, JS       |
-| AI         | OpenAI API          |
-| Email      | Flask-Mail (SMTP)   |
-| Hosting    | Vercel (Serverless) |
+| Layer      | Technology        |
+|------------|-------------------|
+| Backend    | Flask (Python)    |
+| Database   | MySQL / MariaDB   |
+| DB Driver  | PyMySQL           |
+| Frontend   | HTML5, CSS3, JS   |
+| AI         | OpenAI API        |
+| Email      | Flask-Mail (SMTP) |
 
 ---
 
-## 🚀 Deployment Guide
+## 🚀 Getting Started (Run Locally)
 
-### Option A: Deploy on Vercel (Live)
-
-#### Step 1: Set Up a Cloud MySQL Database
-
-Since Vercel is serverless, you need a cloud MySQL provider. **Aiven** (free tier) is recommended:
-
-1. Go to [aiven.io](https://aiven.io) → Sign up (free)
-2. Click **Create Service** → Select **MySQL**
-3. Choose the **Free** plan → Pick a region → Create
-4. Once created, copy these connection details from the service overview:
-   - **Host** (e.g., `mysql-xxxxxxx-xxxxx.aiven.io`)
-   - **Port** (e.g., `25060`)
-   - **User** (e.g., `avnadmin`)
-   - **Password**
-   - **Database name** (default: `defaultdb`, or create `smartcare_hospital`)
-
-#### Step 2: Import the Database Schema
-
-Use a MySQL client to connect and import the schema:
-
-```bash
-mysql -h <HOST> -P <PORT> -u <USER> -p <DATABASE> --ssl-mode=REQUIRED < Schema.sql
-```
-
-Or use **Aiven's Web Console** (SQL tab) to paste and run the contents of `Schema.sql`.
-
-> ⚠️ **Note**: Remove the `INSERT` statements from `Schema.sql` if you want a clean database. Keep them if you want sample data.
-
-#### Step 3: Push to GitHub
-
-```bash
-git add -A
-git commit -m "Ready for Vercel deployment"
-git push -u origin main
-```
-
-#### Step 4: Deploy on Vercel
-
-1. Go to [vercel.com](https://vercel.com) → Sign up with GitHub
-2. Click **Add New Project** → Import your repository
-3. Go to **Settings → Environment Variables** and add:
-
-| Variable         | Value                            |
-|------------------|----------------------------------|
-| `SECRET_KEY`     | A random secret string           |
-| `MYSQL_HOST`     | Your cloud MySQL host            |
-| `MYSQL_PORT`     | Your cloud MySQL port            |
-| `MYSQL_USER`     | Your cloud MySQL username        |
-| `MYSQL_PASSWORD` | Your cloud MySQL password        |
-| `MYSQL_DB`       | `smartcare_hospital`             |
-| `MYSQL_SSL`      | `true`                           |
-| `OPENAI_API_KEY` | Your OpenAI API key              |
-| `MAIL_USERNAME`  | Your Gmail address               |
-| `MAIL_PASSWORD`  | Your Gmail App Password          |
-
-4. Click **Deploy** 🎉
-
----
-
-### Option B: Run Locally
-
-#### Step 1: Prerequisites
+### Step 1: Prerequisites
 
 - Python 3.9+
-- MySQL/MariaDB (e.g., via XAMPP)
+- MySQL / MariaDB (e.g. via XAMPP or standalone server)
 
-#### Step 2: Set Up the Database
+### Step 2: Set Up the Database
+
+Import `Schema.sql` into your MySQL server:
 
 ```bash
 mysql -u root -p < Schema.sql
 ```
 
-#### Step 3: Install Dependencies
+### Step 3: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### Step 4: Configure Environment
+### Step 4: Configure Environment
 
-Copy `.env.example` to `.env` and fill in your values:
+Copy `.env.example` to `.env` and fill in your database and API credentials:
 
 ```bash
 cp .env.example .env
 ```
 
-#### Step 5: Run
+### Step 5: Run Application
 
 ```bash
 python app.py
 ```
 
-Visit: [http://localhost:5000](http://localhost:5000)
+Access the application in your browser at: **[http://localhost:5000](http://localhost:5000)**
 
 ---
 
@@ -136,36 +76,32 @@ Visit: [http://localhost:5000](http://localhost:5000)
 | Email    | admin@smartcare.com  |
 | Password | admin123             |
 
-> Change this after first login!
-
 ---
 
 ## 📁 Project Structure
 
 ```
-├── api/
-│   └── index.py          # Vercel serverless entry point
 ├── routes/
 │   ├── admin_routes.py   # Admin dashboard & management
-│   ├── auth_routes.py    # Login, Register, OTP
+│   ├── auth_routes.py    # Login, Register, OTP verification
 │   ├── doctor_routes.py  # Doctor dashboard & prescriptions
 │   └── patient_routes.py # Patient dashboard & appointments
 ├── static/
 │   ├── css/              # Stylesheets
 │   ├── img/              # Images
-│   └── js/               # JavaScript
-├── templates/            # Jinja2 HTML templates
+│   ├── js/               # JavaScript files
+│   └── uploads/          # Patient medical report uploads
+├── templates/            # HTML templates (Jinja2)
 ├── utils/
 │   ├── ai_helper.py      # OpenAI chatbot integration
 │   ├── auth.py           # Auth decorators
-│   └── data_structures.py
-├── app.py                # Flask application factory
-├── config.py             # Configuration (reads env vars)
-├── db.py                 # PyMySQL database module
-├── Schema.sql            # Database schema + sample data
+│   └── data_structures.py# Custom data structure utilities
+├── app.py                # Flask main application factory
+├── config.py             # Application configuration
+├── db.py                 # PyMySQL database connection
+├── Schema.sql            # Database schema
 ├── requirements.txt      # Python dependencies
-├── vercel.json           # Vercel deployment config
-├── .env.example          # Environment variable template
+├── .env.example          # Environment variables template
 └── .gitignore            # Git ignore rules
 ```
 
@@ -173,4 +109,4 @@ Visit: [http://localhost:5000](http://localhost:5000)
 
 ## 📄 License
 
-This project is for educational purposes (SEM3 - Full Stack Development with Python).
+Educational project for SEM3 - Full Stack Development with Python.
