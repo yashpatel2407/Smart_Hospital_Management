@@ -13,6 +13,10 @@ venv/
 env/
 .venv/
 
+# Uploads (user data)
+static/uploads/*
+!static/uploads/.gitkeep
+
 # IDE
 .vscode/
 .idea/
